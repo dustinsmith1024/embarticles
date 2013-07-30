@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Embarticles</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <script src="http://code.jquery.com/jquery.min.js"></script>
+<link href="http://twitter.github.io/bootstrap/assets/css/bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="http://twitter.github.io/bootstrap/assets/css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+<script src="http://twitter.github.io/bootstrap/assets/js/bootstrap.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.0-rc.3/handlebars.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/ember.js/1.0.0-rc.6/ember.min.js"></script>
+  <script src="http://builds.emberjs.com.s3.amazonaws.com/ember-data-latest.js"></script>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body class="container">
+
+
+  <script type="text/x-handlebars">
+    <h2>DSPN</h2>
+    <div class="row">
+    {{#linkTo 'articles' }}Articles{{/linkTo}}
+    </div>
+    <div class="row">
+    {{outlet}}
+    </div>
+  </script>
+  
+  <script type="text/x-handlebars" data-template-name="index">
+    Edit the index action.
+    <ul class="span4">
+
+    {{#each item in model}}
+      <li>{{item}}</li>
+    {{/each}}
+    </ul>
+  </script>
+  
+  <script type="text/x-handlebars" data-template-name="articles">
+    <div class="span4">
+      <h1>{{title}}</h1>
+      <ul>
+        {{#each article in model}}
+          <li>{{#linkTo 'articles.view' article}}{{article.title}}{{/linkTo}}</li>
+        {{/each}}
+
+        <li>{{#linkTo 'articles.new'}}New Article{{/linkTo}}</li>
+      </ul>
+    </div>
+    <div class="span8">{{outlet}}</div>
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="darticles">
+      <div class="span4">
+        <h1>{{title}}</h1>
+        <ul>
+          {{#each article in model}}
+            <li>{{article.shortLinkText}}</li>
+          {{/each}}
+        </ul>
+      </div>
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="article_summary">
+     {{title}} - {{headline}} ({{description}})
+  </script>
+  
+  <script type="text/x-handlebars" data-template-name="articles/view">
+    {{render "article_summary" model}}
+    <p>{{model.description}}</p>
+    <h2>{{model.link_text}}</h2>
+    <p>{{model.source}}</p>
+    
+    <iframe {{bindAttr src="model.link_text"}} sandbox="allow-forms allow-scripts">
+    You has no iframe 
+   </iframe>
+    
+    <nav>
+      {{#linkTo 'articles.edit' model}}Edit{{/linkTo}}
+    </nav>
+  </script>
+    
+  <script type="text/x-handlebars" data-template-name="articles/edit">
+   <h3>Edit:</h3>
+     {{render "article_summary" model}}
+     
+     <form class="form" {{action save on="submit"}}>
+      <label>Title: {{ input type="text" value=model.title}}</label>
+      <label>Description: {{input type="text" value=model.description}}</label>
+      <label>Link Text: {{ input type="text" value=model.link_text}}</label>
+      
+      <button {{action 'delete' model}} class="btn-danger">Delete</button>
+      <button type="submit" class="btn btn-primary">Done</button>
+    </form>
+    <nav>
+      {{#linkTo 'articles.view' model}}Back to Articles{{/linkTo}}
+    </nav>
+  </script>
+  
+  <script type="text/x-handlebars" data-template-name="articles/new">
+    <h3>New:</h3>
+    {{render "article_summary" model}}
+   
+     <form class="form" {{action save on="submit"}}>
+      <label>Title: {{ input type="text" value=model.title}}</label>
+      <label>Description: {{input type="text" value=model.description}}</label>
+      <label>Link Text: {{ input type="text" value=model.link_text}}</label>
+      
+      <button type="submit" class="btn btn-primary">Done</button>
+    </form>
+    
+    <nav>
+      {{#linkTo 'articles.view' model}}Back to Articles{{/linkTo}}
+    </nav>
+  </script>
+
+</body>
+</html>
