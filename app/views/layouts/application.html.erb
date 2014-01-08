@@ -19,7 +19,8 @@
   <script type="text/x-handlebars">
     <h2>DSPN</h2>
     <div class="row">
-    {{#linkTo 'articles' }}Articles{{/linkTo}}
+    {{#linkTo 'articles' }}Articles{{/linkTo}} | 
+    {{#linkTo 'espn_articles' }}ESPN Articles{{/linkTo}}
     </div>
     <div class="row">
     {{outlet}}
@@ -50,15 +51,22 @@
     <div class="span8">{{outlet}}</div>
   </script>
 
-  <script type="text/x-handlebars" data-template-name="darticles">
+  <script type="text/x-handlebars" data-template-name="espn_articles">
       <div class="span4">
-        <h1>{{title}}</h1>
+        <h1>{{model.title}}</h1>
         <ul>
           {{#each article in model}}
-            <li>{{article.shortLinkText}}</li>
+            <li>{{#linkTo 'espn_articles.view' article}}{{article.shortLinkText}}{{/linkTo}}</li>
           {{/each}}
         </ul>
       </div>
+      <div class="span8">{{outlet}}</div>
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="espn_articles/view">
+  <h1>Title: {{shortLinkText}}</h1>
+  <h2>{{links.web.href}}</h2>
+  <section>{{content}}</section>
   </script>
 
   <script type="text/x-handlebars" data-template-name="article_summary">

@@ -21,7 +21,9 @@ window.onbeforeunload = function(){
 App = Ember.Application.create();
 
 App.Router.map(function() {
-  this.resource("darticles");
+  this.resource("espn_articles", function(){
+    this.route("view", { path: '/:espn_article_id' });
+  });
   this.resource("articles", function() {
     this.route("new", { path: '/new' });
     this.route("edit", { path: '/:article_id/edit' });
@@ -68,7 +70,7 @@ DS.RESTAdapter.reopen({
   url: 'http://localhost:3000'
 });*/
 
-App.Darticle = DS.Model.extend({
+App.EspnArticle = DS.Model.extend({
   shortLinkText: DS.attr('string'),
   //date: DS.attr('date'),
   headline: DS.attr('string'),
@@ -111,7 +113,7 @@ App.ArticlesRoute = Ember.Route.extend(
     }
 });
 
-App.DarticlesRoute = Ember.Route.extend(
+App.EspnArticlesRoute = Ember.Route.extend(
   {
     model: function() {
       // the server returns `{ id: 12 }`
@@ -124,6 +126,7 @@ App.DarticlesRoute = Ember.Route.extend(
         _accept: "application/json"
       }).then(function(data){
         console.log(data.headlines);
+        console.log('its here!');
         return data.headlines;
       });
     },
@@ -140,6 +143,25 @@ App.ArticlesViewRoute = Ember.Route.extend(
     model: function(params) {
       console.log(params);
       return App.Article.find(params.article_id);
+    }    
+});
+
+App.EspnArticlesViewRoute = Ember.Route.extend(
+  {
+    model: function(params) {
+      console.log('y?', params);
+      return jQuery.getJSON("http://api.espn.com/v1/sports/news/" + params.espn_article_id, {
+        // enter your developer api key here
+        apikey: "8hu4nra8956f8kymyq955j33",
+        // the type of data you're expecting back from the api
+        _accept: "application/json"
+      }).then(function(data){
+        console.log(data.headlines);
+        console.log('its here!');
+        return data.headlines[0];
+      }).then(function(data){
+        jQuery.get(data.links.web.href);
+      });
     }    
 });
 
@@ -197,6 +219,6 @@ App.ArticlesController = Ember.ArrayController.extend({
   title: 'Articles'
 });
 
-App.DarticlesController = Ember.ArrayController.extend({
+App.EspnArticlesController = Ember.ArrayController.extend({
   title: 'Darticles'
 });
